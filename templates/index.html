@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <!-- LEAFLET -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+      integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+      crossorigin=""
+    />
+
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script
+      src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+      integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+      crossorigin=""
+    ></script>
+
+    <style>
+      .marker-pin-1 {
+        width: 30px;
+        height: 30px;
+        border-radius: 50% 50% 50% 0;
+        background: blue;
+        position: absolute;
+        transform: rotate(-45deg);
+        left: 50%;
+        top: 50%;
+        margin: -15px 0 0 -15px;
+      }
+      .marker-pin-2 {
+        width: 30px;
+        height: 30px;
+        border-radius: 50% 50% 50% 0;
+        background: red;
+        position: absolute;
+        transform: rotate(-45deg);
+        left: 50%;
+        top: 50%;
+        margin: -15px 0 0 -15px;
+      }
+      .marker-pin-3 {
+        width: 30px;
+        height: 30px;
+        border-radius: 50% 50% 50% 0;
+        background: green;
+        position: absolute;
+        transform: rotate(-45deg);
+        left: 50%;
+        top: 50%;
+        margin: -15px 0 0 -15px;
+      }
+
+      .custom-div-icon i {
+        position: absolute;
+        color: #fff;
+        width: 30px;
+        font-size: 22px;
+        left: 0;
+        right: 0;
+        margin: 5px 0;
+        text-align: center;
+      }
+    </style>
+    <title>London Live Map</title>
+  </head>
+  <body>
+    <h1>London Bus Live Map</h1>
+
+    <!-- LEAFLET -->
+    <div id="mapid" style="width:900px; height:580px;"></div>
+    <script>
+      var mymap = L.map("mapid").setView([51.505, -0.09], 13);
+      L.tileLayer(
+        "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
+        {
+          attribution:
+            'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+          maxZoom: 18,
+          id: "mapbox/streets-v11",
+          tileSize: 512,
+          zoomOffset: -1,
+          accessToken:
+            "pk.eyJ1IjoiaWpyb29vdCIsImEiOiJjazhmMWpscXcwMjYwM2ZxY3Flc21ubThhIn0.iuR8fD4CR-CGfri3tOzU8w"
+        }
+      ).addTo(mymap);
+
+      mapMarkers1 = [];
+      mapMarkers2 = [];
+      mapMarkers3 = [];
+
+      icon1 = L.divIcon({
+        className: "custom-div-icon",
+        html:
+          "<div style='' class='marker-pin-1'></div><i class='material-icons'>1</i>",
+        iconSize: [30, 42],
+        iconAnchor: [15, 42]
+      });
+      icon2 = L.divIcon({
+        className: "custom-div-icon",
+        html:
+          "<div style='' class='marker-pin-2'></div><i class='material-icons'>2</i>",
+        iconSize: [30, 42],
+        iconAnchor: [15, 42]
+      });
+
+      icon3 = L.divIcon({
+        className: "custom-div-icon",
+        html:
+          "<div style='' class='marker-pin-3'></div><i class='material-icons'>3</i>",
+        iconSize: [30, 42],
+        iconAnchor: [15, 42]
+      });
+
+      var source = new EventSource("/topic/geo1"); //ENTER YOUR TOPICNAME HERE
+      source.addEventListener(
+        "message",
+        function(e) {
+          console.log("Message");
+          obj = JSON.parse(e.data);
+          console.log(obj);
+          if (obj.busline == "00001") {
+            for (var i = 0; i < mapMarkers1.length; i++) {
+              mymap.removeLayer(mapMarkers1[i]);
+            }
+            marker1 = L.marker([obj.long, obj.lat], {
+              title: obj.busline,
+              icon: icon1
+            }).addTo(mymap);
+            mapMarkers1.push(marker1);
+          }
+
+          if (obj.busline == "00002") {
+            for (var i = 0; i < mapMarkers2.length; i++) {
+              mymap.removeLayer(mapMarkers2[i]);
+            }
+            marker2 = L.marker([obj.long, obj.lat], {
+              title: obj.busline,
+              icon: icon2
+            }).addTo(mymap);
+            mapMarkers2.push(marker2);
+          }
+
+          if (obj.busline == "00003") {
+            for (var i = 0; i < mapMarkers3.length; i++) {
+              mymap.removeLayer(mapMarkers3[i]);
+            }
+            marker3 = L.marker([obj.long, obj.lat], {
+              title: obj.busline,
+              icon: icon3
+            }).addTo(mymap);
+            mapMarkers3.push(marker3);
+          }
+        },
+        false
+      );
+    </script>
+    <!-- END LEAFLET -->
+  </body>
+</html>
