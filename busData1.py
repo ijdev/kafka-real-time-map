@@ -2,12 +2,12 @@ from pykafka import KafkaClient
 from datetime import datetime
 import json
 import uuid
-import time
+
 # our topic is: busData
 
 
 client = KafkaClient(hosts="localhost:9092")
-topic = client.topics['geo1']
+topic = client.topics['busData']
 producer = topic.get_sync_producer()
 
 
@@ -30,7 +30,6 @@ def generate_checkpoint(coordinates):
         print(message)
         # send message to topic.
         producer.produce(message.encode('ascii'))
-        time.sleep(1)
         if i == len(coordinates)-1:
             i = 0
         else:
