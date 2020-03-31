@@ -17,6 +17,7 @@ coordinates = json_array['features'][0]['geometry']['coordinates']  # as List
 
 data = {}
 data['busline'] = '00003'
+##
 
 
 def generate_checkpoint(coordinates):
