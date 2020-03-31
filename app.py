@@ -6,6 +6,7 @@ app = Flask(__name__, template_folder='templates')
 
 def get_kafka_client():
     return KafkaClient(hosts="localhost:9092")
+##
 
 
 @app.route('/')
